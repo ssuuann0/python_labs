@@ -39,6 +39,7 @@ print('Итого к оплате:',round(total,2),'₽')
 ```python
 minute=int(input('Минуты:'))
 print(f'{minute//60}:{minute%60}')
+```
 ![Картинка 4](./images/lab01/04_minutes_to_hhmm.png)
 
 #Задание 5
