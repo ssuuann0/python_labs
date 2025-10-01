@@ -1,7 +1,7 @@
 # python_labs
-#Лабораторная 1
+# Лабораторная 1
 
-#Задание 1
+# Задание 1
 
 ```python
 name= input('Имя:')
@@ -10,7 +10,7 @@ print('Привет,',name,'! Через год тебе будет',age+1)
 ```
 ![Картинка 1](./images/lab01/01_greeting.png)
 
-#Задание 2
+# Задание 2
 
 ```python
 a=float((input('a:')).replace(',','.'))
@@ -19,7 +19,7 @@ print('sum=',round(a+b,2),'  avg=',round((a+b)/2,2))
 ```
 ![Картинка 2](./images/lab01/02_sum_avg.png)
 
-#Задание 3
+# Задание 3
 
 ```python
 price=float(input('price='))
@@ -34,7 +34,7 @@ print('Итого к оплате:',round(total,2),'₽')
 ```
 ![Картинка 3](./images/lab01/03_discount_vat.png)
 
-#Задание 4
+# Задание 4
 
 ```python
 minute=int(input('Минуты:'))
@@ -42,7 +42,7 @@ print(f'{minute//60}:{minute%60}')
 ```
 ![Картинка 4](./images/lab01/04_minutes_to_hhmm.png)
 
-#Задание 5
+# Задание 5
 
 ```python
 name=[]
@@ -52,7 +52,7 @@ print('Длина (символов):',len(name[0])+len(name[1])+len(name[2])+2)
 ```
 ![Картинка 5](./images/lab01/05_initials_and_len.png)
 
-#Задание 6
+# Задание 6
 
 ```python
 n=int(input())
@@ -68,7 +68,7 @@ print(full,dist)
 ```
 ![Картинка 6](./images/lab01/06.png)
 
-#Задание 7
+# Задание 7
 
 ```python
 s=input()
