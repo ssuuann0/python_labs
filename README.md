@@ -168,3 +168,24 @@ def col_sums(mat):
         return col_sum_mat
 ```
 ![Картинка 8](./images/lab02/matrix.png)
+
+# Задание 3
+
+```python
+def format_record(rec):
+    if len(rec)!=3:
+        return 'ValueError'
+    if len(rec)==3 and type(rec[2]) is not float:
+        return 'TypeError'
+    name=[]
+    name.append(rec[0].split())
+    fullinit=''#имя+инициалы
+    fullinit=fullinit+name[0][0][0].upper()+name[0][0][1:]+' '+name[0][1][0].upper()+'.'
+    if len(name[0])==3:
+        fullinit=fullinit+name[0][2][0].upper()+'.'
+    group=rec[1]
+    gpa=f'{rec[2]:.2f}'
+    final=f'{fullinit},гр. {group},GPA {gpa}'
+    return final
+```
+![Картинка 8](./images/lab02/tuples.png)
