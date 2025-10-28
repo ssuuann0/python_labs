@@ -100,7 +100,7 @@ print(finall)
 ```
 ![Картинка 7](./images/lab01/07.png)
 
-# Лабараторная 2
+# Лабораторная 2
 
 # Задание 1
 
@@ -189,3 +189,93 @@ def format_record(rec):
     return final
 ```
 ![Картинка 8](./images/lab02/tuples.png)
+
+# Лабораторная 3
+
+# Задание 1
+
+```python
+def normalize(text: str, *, casefold: bool = True, yo2e: bool = True):
+    if casefold:
+        text=text.casefold()
+    if yo2e:
+        text=text.replace('ё','е').replace('Ё','Е')
+    if '\t' in text or '\n' in text or '\r' in text:
+        text=text.replace('\t',' ').replace('\n',' ').replace('\r',' ')
+    text=' '.join(text.split())
+    return text
+
+print('normalize')
+
+n='ПрИвЕт\nМИр\t'
+print(normalize(n))
+
+n='ёжик, Ёлка'
+print(normalize(n))
+
+n='Hello\r\nWorld'
+print(normalize(n))
+
+n='  двойные   пробелы  '
+print(normalize(n))
+
+import re
+def tokenize(text):
+    pat=r'[^\w-]'
+    text= re.sub(pat,'  ',text)
+    return text.split()
+
+print('tokenize')
+
+m="привет мир"
+print(tokenize(m))
+
+m="hello,world!!!"
+print(tokenize(m))
+
+m="по-настоящему круто"
+print(tokenize(m))
+
+m="2025 год"
+print(tokenize(m))
+
+m="emoji 😀 не слово"
+print(tokenize(m))
+
+def count_freq(tokens: list[str]):
+    counts=dict()
+    for i in (sorted(set(tokens))):
+            counts[i] = tokens.count(i)
+    return counts
+
+def top_n(freq: dict[str, int], n: int = 5):
+     sorted_freq = sorted(freq.items(), key=lambda x: (-x[1], x[0]))
+     return  sorted_freq [:n]
+
+print('count_freq')
+
+x=["a","b","a","c","b","a"]
+print(count_freq(x))
+print(top_n(count_freq(x),n=2))
+
+x=["bb","aa","bb","aa","cc"]
+print(count_freq(x))
+print(top_n(count_freq(x),n=2))
+```
+![Картинка 9](./images/lab03/text.png)
+
+# Задание 2
+
+```python
+import sys
+sys.path.append('C:/Users/Соня/OneDrive/Рабочий стол/git/python_labs-1/src/lib')
+from text2 import count_freq, top_n, tokenize, normalize
+
+fr=input()
+print(f'Всего слов:{len(tokenize(fr))}')
+print(f'Уникальных слов:{len(set(tokenize(fr)))}')
+print('Топ-5:')
+for i in top_n(count_freq(tokenize(normalize(fr)))):
+    print(f'{i[0]}:{i[1]}')
+```
+![Картинка 9](./images/lab03/text_stats.png)
