@@ -279,3 +279,73 @@ for i in top_n(count_freq(tokenize(normalize(fr)))):
     print(f'{i[0]}:{i[1]}')
 ```
 ![Картинка 9](./images/lab03/text_stats.png)
+
+# Лабораторная 4
+
+# Задание 1
+
+```python
+from pathlib import Path
+
+def read_text(path: str | Path, encoding: str = "utf-8") -> str:
+    p=Path(path)
+    try:
+        with open(p,'r',encoding=encoding) as file:
+                return str(' '.join(file.read().split()))
+    except FileNotFoundError as e:
+         raise FileNotFoundError('Файл не найден') from e
+    except UnicodeDecodeError as e:
+         raise ValueError('Неправильная коодировка') from e
+#print(read_text(r"C:\Users\Соня\OneDrive\Рабочий стол\git\python_labs-1\src\data\lab_04\input.txt"))#пользователь может выбрать другую кодировку, прописав это 
+
+import csv
+
+def write_csv(rows: list[tuple | list], path: str | Path, header: tuple[str, ...] | None = None) -> None:
+    p = Path(path)
+    rows = list(rows)
+    if rows:
+        first_length = len(rows[0])
+        for i, row in enumerate(rows):
+            if len(row) != first_length:
+                raise ValueError(f"Строка {i+1} имеет длину {len(row)}, ожидается {first_length}")
+
+    if header is not None and rows:
+        if len(header) != len(rows[0]):
+            raise ValueError(f"Header имеет длину {len(header)}, а строки - {len(rows[0])}")
+
+    with p.open("w", newline="", encoding="utf-8") as f:
+        w = csv.writer(f)
+        if header is not None:
+            w.writerow(header)
+        for r in rows:
+            w.writerow(r)
+
+#write_csv([("word","count"),("test",3)], r"C:\Users\Соня\OneDrive\Рабочий стол\git\python_labs-1\src\data\lab_04\check.csv")
+```
+![Картинка 10](./images/lab04/io_txt_csv3.png)
+![Картинка 11](./images/lab04/io_txt_csv1.png)
+![Картинка 12](./images/lab04/io_txt_csv2.png)
+
+# Задание 2
+
+```python
+import sys
+sys.path.append('C:/Users/Соня/OneDrive/Рабочий стол/git/python_labs-1/src/lib')
+from text2 import count_freq, top_n, tokenize, normalize
+from io_txt_csv import read_text, write_csv
+from pathlib import Path
+
+def text_report(path:Path|str):
+    p=Path(path)
+    text_str=read_text(p)
+    norm_text=tokenize(normalize(text_str))
+    freq_text=top_n(count_freq(norm_text))
+    write_csv(freq_text,r"C:\Users\Соня\OneDrive\Рабочий стол\git\python_labs-1\src\data\lab_04\report.csv")
+    print(f'Всего слов:{len(norm_text)}')
+    print(f'Уникальных слов:{len(set(norm_text))}')
+    print('Топ-5:')
+    for i in freq_text:
+        print(f'{i[0]}:{i[1]}')
+text_report(r"C:\Users\Соня\OneDrive\Рабочий стол\git\python_labs-1\src\data\lab_04\input.txt")
+```
+![Картинка 13](./images/lab04/text_report.png)
