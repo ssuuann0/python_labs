@@ -456,3 +456,120 @@ def csv_to_xlsx(csv_path: str, xlsx_path: str) -> None:
 #csv_to_xlsx(r'C:\Users\Соня\OneDrive\Рабочий стол\git\python_labs-1\src\data\lab_05\samples\people.csv',r'C:\Users\Соня\OneDrive\Рабочий стол\git\python_labs-1\src\data\lab_05\out\people.xlsx')
 ```
 ![Картинка 15](./images/lab05/people_xlsx.png)
+
+# Лабораторная 6
+
+# Задание 1
+
+```python
+import argparse
+from pathlib import Path
+import sys
+sys.path.append('C:/Users/Соня/OneDrive/Рабочий стол/git/python_labs-1/src/lib')
+from text2 import *
+
+def main():
+    parser = argparse.ArgumentParser(description="CLI‑утилиты лабораторной №6") 
+    subparsers = parser.add_subparsers(dest="command",required=True)
+
+    # подкоманда cat
+    cat_parser = subparsers.add_parser("cat", help="Вывести содержимое файла")
+    cat_parser.add_argument("--input", required=True)
+    cat_parser.add_argument("-n", action="store_true", help="Нумеровать строки")
+
+    # подкоманда stats
+    stats_parser = subparsers.add_parser("stats", help="Частоты слов")
+    stats_parser.add_argument("--input", required=True)
+    stats_parser.add_argument("--top", type=int, default=5)
+
+    args = parser.parse_args()
+    try:
+        path_input = Path(args.input)
+        str_input = path_input.read_text(encoding='utf-8')#открывает файл,читает как строку и закрывает
+
+        if args.command == "cat":
+            """ Реализация команды cat """
+            for num, word in enumerate(str_input.split('\n')):#num-номер строки(с 0), а word сама строку
+                if args.n:
+                    print(num + 1, word)
+                else:
+                    print(word)
+        elif args.command == "stats":
+            """ Реализация команды stats """
+            print(f'Всего слов:{len(tokenize(str_input))}')
+            print(f'Уникальных слов:{len(set(tokenize(str_input)))}')
+            print(f'Топ-{args.top}:')
+            for i in top_n(count_freq(tokenize(normalize(str_input))),args.top):
+                print(f'{i[0]}:{i[1]}')
+    except FileNotFoundError:
+        raise FileNotFoundError("Нет входного файла")
+
+
+if __name__ == "__main__":
+    main()
+
+#py -m src.lab_06.cli_text cat --input  src/data/lab_06/my_cli.txt -n
+
+#py -m src.lab_06.cli_text stats --input  src/data/lab_06/my_cli.txt --top 3
+
+#py -m src.lab_06.cli_text stats --help
+```
+![Картинка 16](./images/lab06/cli_text.png)
+![Картинка 17](./images/lab06/cli_text_help.png)
+
+# Задание 2
+
+```python
+import argparse
+from pathlib import Path
+import sys
+sys.path.append('C:/Users/Соня/OneDrive/Рабочий стол/git/python_labs-1/src/lab_05')
+from json_csv import json_to_csv, csv_to_json
+from csv_xlsx import csv_to_xlsx
+
+
+def main():
+    parser = argparse.ArgumentParser(description="Конвертеры данных")
+    sub = parser.add_subparsers(dest="cmd")
+
+    p1 = sub.add_parser("json2csv",help='Перевести json в csv')
+    p1.add_argument("--in", dest="input", required=True)
+    p1.add_argument("--out", dest="output", required=True)
+
+    p2 = sub.add_parser("csv2json",help='Перевести csv в json')
+    p2.add_argument("--in", dest="input", required=True)
+    p2.add_argument("--out", dest="output", required=True)
+
+    p3 = sub.add_parser("csv2xlsx",help='Перевести csv в xlsx')
+    p3.add_argument("--in", dest="input", required=True)
+    p3.add_argument("--out", dest="output", required=True)
+
+    args = parser.parse_args()
+
+    try:
+        if args.cmd == 'json2csv':
+            json_to_csv(args.input, args.output)
+        if args.cmd == 'csv2json':
+            csv_to_json(args.input, args.output)
+        if args.cmd == 'csv2xlsx':
+            csv_to_xlsx(args.input, args.output)
+    except FileNotFoundError:
+        raise FileNotFoundError('Нет входного файла')
+
+
+if __name__ == "__main__":
+    main()
+
+
+#py -m src.lab_06.cli_convert json2csv --in  src/data/lab_05/samples/people.json  --out src/data/lab_06/out/people2_from_json.csv
+
+#py -m src.lab_06.cli_convert csv2json --in  src/data/lab_05/samples/people.csv  --out src/data/lab_06/out/people2_from_csv.json
+
+#py -m src.lab_06.cli_convert csv2xlsx --in  src/data/lab_05/samples/people.csv  --out src/data/lab_06/out/people2.xlsx 
+
+#py -m src.lab_06.cli_convert --help
+```
+![Картинка 18](./images/lab06/people2_from_json.png)
+![Картинка 18](./images/lab06/people2_from_csv.png)
+![Картинка 18](./images/lab06/people2_xlsx.png)
+![Картинка 19](./images/lab06/cli_convert_help.png)
