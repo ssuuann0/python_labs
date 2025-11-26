@@ -59,4 +59,4 @@ def test_top_n_tie_breaker():  # проверяет top_n с одинаковы�
     freq = count_freq(["bb", "aa", "bb", "aa", "cc"])
     assert top_n(freq, 3) == [("aa", 2), ("bb", 2), ("cc", 1)]
 ```
-![Картинка 1]([./images/lab07/test_text.png](https://github.com/ssuuann0/python_labs/blob/d5a09bbbd83ce3f794f9e3256096f32ab36a74bf/images/lab07/test_text.png))
+<img src="https://github.com/ssuuann0/python_labs/blob/d5a09bbbd83ce3f794f9e3256096f32ab36a74bf/images/lab07/test_text.png" alt="Картинка 1" />
