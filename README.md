@@ -573,3 +573,111 @@ if __name__ == "__main__":
 ![Картинка 18](./images/lab06/people2_from_csv.png)
 ![Картинка 18](./images/lab06/people2_xlsx.png)
 ![Картинка 19](./images/lab06/cli_convert_help.png)
+
+# Лабораторная 8
+
+# Задание 1
+
+```python
+from dataclasses import dataclass
+from datetime import datetime, date
+
+@dataclass
+class Student:
+    fio: str
+    birthdate: str
+    group: str
+    gpa: float
+
+    def __post_init__(self):
+        # TODO: добавить нормальную валидацию формата даты и диапазона gpa
+        try:
+            datetime.strptime(self.birthdate, "%Y-%m-%d") # переводим str в формат даты
+        except ValueError:
+            raise ValueError("Неверный формат даты рождения")
+        
+        if date.today() < date.fromisoformat(self.birthdate):
+            raise ValueError("Дата рождения не может быть больше чем текущая")
+
+        if not (0 <= self.gpa <= 5):
+            raise ValueError("gpa должен быть от 0 до 5")
+        
+        if isinstance(self.gpa,int):
+            raise ValueError("gpa должен иметь формат float")
+
+    def age(self) -> int:
+        birth = date.fromisoformat(self.birthdate)
+        today = date.today()
+        age= today.year - birth.year
+        if (today.month, today.day) < (birth.month, birth.day):
+            age-=1
+        return age
+
+    def to_dict(self) -> dict:
+        return {
+            "fio": self.fio,
+            "birthdate": self.birthdate,
+            "group": self.group,
+            "gpa": self.gpa
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict):
+        return cls(
+            fio=data['fio'],
+            birthdate=data['birthdate'],
+            group=data['group'],
+            gpa=data['gpa']
+        )
+
+    def __str__(self):
+        return f"ФИО студента:{self.fio}, группа студента:{self.group}, GPA: {self.gpa}"
+    
+
+if __name__ == '__main__':
+     student = Student(
+         fio = 'Александров Александр Александрович',
+         birthdate = '2006-01-25',
+         group = 'BIVT-25-2',
+         gpa = 4.7
+     )
+     print(student.to_dict()) # вывод в виде словаря
+     print()
+     print(student.from_dict(student.to_dict())) # вывод в красивом виде из словаря
+     print()
+     print(student.age()) # вывод полных лет
+     print()
+     print(student) # вывод в красивом виде
+```
+![Картинка 20](./images/lab08/models.png)
+
+# Задание 2
+
+```python
+import json
+from pathlib import Path
+from models import Student
+
+students_data = [
+    Student('Иванов Иван Иванович', '2006-02-13', 'BIVT-24-3', 2.8),
+    Student('Григорьев Григорий Григорьевич', '2007-08-22', 'BIVT-25-2', 4.5)
+]
+
+def students_to_json(students, path):
+    p = Path(path)
+    data = [s.to_dict() for s in students]# создает список словарей
+    with open(str(p), 'w', encoding='utf-8') as file:
+        json.dump(data, file, ensure_ascii=False, indent=2)#создает json, ensure_ascii- поддержка кириллицы, indent форматирование
+
+def students_from_json(path):
+    p = Path(path)
+    with open(str(p), 'r') as file:
+        data = json.load(file)# открывает json
+    print([Student.from_dict(item) for item in data]) # преобразует файл в обьект класса Student
+
+
+if __name__ == '__main__':
+    students_to_json(students_data, r'C:\Users\Соня\OneDrive\Рабочий стол\git\python_labs-1\src\data\lab_08\students_output.json')
+    students_from_json(r'C:\Users\Соня\OneDrive\Рабочий стол\git\python_labs-1\src\data\lab_08\students_input.json')
+```
+![Картинка 20](./images/lab08/serialize.png)
