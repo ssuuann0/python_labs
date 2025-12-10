@@ -590,7 +590,6 @@ class Student:
     gpa: float
 
     def __post_init__(self):
-        # TODO: добавить нормальную валидацию формата даты и диапазона gpa
         try:
             datetime.strptime(self.birthdate, "%Y-%m-%d") # переводим str в формат даты
         except ValueError:
