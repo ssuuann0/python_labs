@@ -916,10 +916,10 @@ print(f'оставшийся размер: {len(queue)}')  # 1
 
  # Задание 2
  ```python
-class Node:  # узел односвязного списка.
+class Node:  # узел
     def __init__(self, value, next=None):
-        self.value = value  # значение элемента.
-        self.next = next  # ссылка на следующий узел или None, если это последний узел.
+        self.value = value  # значение элемента
+        self.next = next  # ссылка на следующий узел 
 
 
 class SinglyLinkedList:  # односвязный список, состоящий из узлов Node
