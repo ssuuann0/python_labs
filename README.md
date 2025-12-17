@@ -795,4 +795,5 @@ if __name__ == '__main__':
  ![Картинка 21](./images/lab09/students1.png)
 
  изменение csv файла  
+ 
  ![Картинка 22](./images/lab09/students2.png)
