@@ -797,3 +797,262 @@ if __name__ == '__main__':
  изменение csv файла  
  
  ![Картинка 22](./images/lab09/students2.png)
+
+# Лабораторная 10
+# Теория
+Стек-структура, где элементы добавляются и удаляются с одного конца (вершины).
+Типичные операции:
+push(item) - добавить элемент на вершину
+pop() - снять верхний элемент
+peek() - посмотреть верхний элемент без удаления
+is_empty() - проверка на пустоту
+
+Очередь-структура, где элементы добавляются в конец, а удаляются из начала
+Типичные операции:
+enqueue(item) - добавить в конец
+dequeue() - взять первый элемент
+front() - посмотреть первый элемент
+is_empty() - проверка на пустоту
+
+Связный список-цепочка узлов, где каждый узел содержит данные и ссылку на следующий узел.
+Типичные операции:
+insert(item, position) - вставка
+delete(position) - удаление
+search(item) - поиск
+get(index) - доступ по индексу
+prepend(item)-добавить в начало
+append(item)-добавить в конец
+
+Стек-самая быстрая структура,связный список-медленная.
+
+# Заданиие 1
+```python
+from collections import deque
+
+class Stack:
+    def __init__(self):
+        # внутреннее хранилище стека
+        self._data = []
+
+    def push(self, item):
+        # корректно: добавление в конец списка O(1) амортизированно
+        self._data.append(item)
+
+    def pop(self):
+        # обработка случая пустого стека (сейчас IndexError от list)
+        if self.is_empty():
+            raise IndexError('Пустой стек')
+        return self._data.pop()
+
+    def peek(self):
+        # вернуть None для пустого стека
+        if self.is_empty():
+            return None
+        return self._data[-1]
+
+    def is_empty(self) -> bool:
+        return len(self._data) == 0
+    
+    def __len__(self):
+        return len(self._data)
+
+
+class Queue:
+    def __init__(self):
+        
+        self._data = deque()
+
+    def enqueue(self, item):
+        # вставка в конец
+        self._data.append(item)
+
+    def dequeue(self):
+        # ошибка: удаление с конца, а не с начала
+        return self._data.popleft()
+
+    def peek(self):
+        # TODO: корректное поведение при пустой очереди
+        if not self.is_empty():
+            return None
+        return self._data[0]
+
+    def is_empty(self) -> bool:
+        return len(self._data) == 0
+    
+    def __len__(self):
+        return len(self._data)
+    
+print('Stack')
+stack = Stack()
+print(f'Пустой стек: {stack.is_empty()}')  # True
+# добавляем элементы
+stack.push(24)
+stack.push(25)
+stack.push(26)
+print(f'размер стека после добавления 3 элементов: {len(stack)}')  # 3
+# верхний элемент без удаления
+print(f'верхний элемент (peek): {stack.peek()}')  # 26
+# удаляем элементы (LIFO - Last In First Out)
+print(f'удаляем {stack.pop()}')  # 26
+print(f'удаляем {stack.pop()}')  # 25
+print(f'оставшийся размер: {len(stack)}')  # 1
+
+print('Queue')
+queue = Queue()
+print(f'пустая очередь: {queue.is_empty()}')  # True
+# добавляем элементы
+queue.enqueue(15)
+queue.enqueue(20)
+queue.enqueue(25)
+print(f'размер очереди после добавления 3 элементов: {len(queue)}')  # 3
+# первый элемент без удаления
+print(f'первый элемент: {queue.peek()}') # 15
+# удаляем элементы (FIFO - First In First Out)
+print(f'удаляем (dequeue): {queue.dequeue()}')  # 15
+print(f'удаляем (dequeue): {queue.dequeue()}')  # 20
+print(f'оставшийся размер: {len(queue)}')  # 1
+```
+ ![Картинка 23](./images/lab10/structures.png)
+
+ # Задание 2
+ ```python
+class Node:  # узел односвязного списка.
+    def __init__(self, value, next=None):
+        self.value = value  # значение элемента.
+        self.next = next  # ссылка на следующий узел или None, если это последний узел.
+
+
+class SinglyLinkedList:  # односвязный список, состоящий из узлов Node
+    def __init__(self):
+        self.head: Node | None = None  # первый узел
+        self.tail: Node | None = None  # хвост списка 
+        # ошибка: размер не обновляется
+        self._size = 0
+
+    def append(self, value):
+        """Добавить элемент в конец """
+        new_node = Node(value)
+        if self.head is None:
+            # если список пуст, новый узел становится и head и tail
+            self.head = new_node
+            self.tail = new_node
+        else:
+            # добавляем после tail и обновляем tail
+            self.tail.next = new_node
+            self.tail = new_node
+        self._size += 1
+
+    def prepend(self, value):
+        """Добавить элемент в начало списка"""
+        new_node = Node(value, next=self.head)
+        self.head = new_node
+        self._size += 1
+
+    def insert(self, idx, value):
+        """Вставка по индексу"""
+        if idx < 0 or idx > self._size:
+            raise IndexError(f"Index {idx} out of range [0, {self._size}]")
+
+        if idx == 0:
+            self.prepend(value)
+            return
+
+        if idx == self._size:  # оптимизация для вставки в конец
+            self.append(value)
+            return
+
+        current = self.head
+        # Нет ошибки: idx проверен выше, current гарантированно не None для idx > 0
+        for _ in range(idx - 1):
+            current = current.next
+
+        new_node = Node(value, next=current.next)
+        current.next = new_node
+
+        # обновляем tail если вставили после него
+        if current == self.tail:
+            self.tail = new_node
+
+        self._size += 1  # увеличиваем размер
+
+    def remove(self, value):
+        """Удалить первое вхождение значения value"""
+        if self.head is None:
+            return  # список пуст, нечего удалять
+
+        # eсли удаляем первый элемент
+        if self.head.value == value:
+            self.head = self.head.next
+            self._size -= 1
+            if self.head is None:  # если список стал пустым
+                self.tail = None
+            return
+
+        # ищем элемент для удаления
+        current = self.head
+        while current.next is not None and current.next.value != value:
+            current = current.next
+
+        # если нашли элемент для удаления
+        if current.next is not None:
+            current.next = current.next.next
+            self._size -= 1
+            # если удалили последний элемент
+            if current.next is None:
+                self.tail = current
+
+    def remove_at(self, idx):
+        """удалить элемент по индексу idx"""
+        if idx < 0 or idx >= self._size:
+            raise IndexError(f"Index {idx} out of range [0, {self._size - 1}]")
+
+        if idx == 0:
+            self.head = self.head.next
+            self._size -= 1
+            if self.head is None:  # если список стал пустым
+                self.tail = None
+            return
+
+        current = self.head
+        for _ in range(idx - 1):
+            current = current.next
+
+        # удаляем элемент
+        current.next = current.next.next
+        self._size -= 1
+
+        # обновляем tail если удалили последний элемент
+        if current.next is None:
+            self.tail = current
+
+    def __iter__(self):
+        current = self.head
+        while current is not None:
+            yield current.value
+            current = current.next
+
+    def __len__(self):
+        return self._size
+
+    def __repr__(self):
+        values = list(self)
+        return f"SinglyLinkedList({values})"
+    
+lst = SinglyLinkedList()
+# добавление элементов
+lst.append(1)
+lst.append(2)
+lst.append(3)
+print(lst)  # SinglyLinkedList([1, 2, 3])
+print(len(lst))  # 3
+# добавление в начало
+lst.prepend(0)
+print(lst)  # SinglyLinkedList([0, 1, 2, 3])
+# вставка по индексу
+lst.insert(2, 99)
+print(lst)  # SinglyLinkedList([0, 1, 99, 2, 3])
+# удаление по значению
+lst.remove(99)
+print(lst)  # SinglyLinkedList([0, 1, 2, 3])
+```
+ ![Картинка 23](./images/lab10/linked.png)
